@@ -15,68 +15,98 @@
 ?>
 <?php include_once('layouts/header.php'); ?>
 
-<div class="row">
-   <div class="col-md-6">
-     <?php echo display_msg($msg); ?>
-   </div>
+ <?php  
+    // Get count of low stock products  
+    $threshold = 10;  
+    $sql = "SELECT COUNT(id) AS low_stock_count FROM products WHERE quantity <= {$threshold}";  
+    $result = $db->query($sql);  
+    $low_stock = $db->fetch_assoc($result);  
+    $low_stock_count = $low_stock['low_stock_count'];  
+    ?>  
+      
+
+<div class="row">  
+   <div class="col-md-6">  
+     <?php echo display_msg($msg); ?>  
+   </div>  
+</div>  
+<div class="row">  
+    <?php  
+    // Get count of low stock products  
+    $threshold = 10;  
+    $sql = "SELECT COUNT(id) AS low_stock_count FROM products WHERE quantity <= {$threshold}";  
+    $result = $db->query($sql);  
+    $low_stock = $db->fetch_assoc($result);  
+    $low_stock_count = $low_stock['low_stock_count'];  
+    ?>  
+      
+    <div class="col-xs-12" style="display: flex; flex-wrap: wrap;">  
+        <a href="users.php" style="color:black; flex: 1; min-width: 200px; margin: 5px;">  
+            <div class="panel panel-box clearfix">  
+                <div class="panel-icon pull-left bg-secondary1">  
+                    <i class="glyphicon glyphicon-user"></i>  
+                </div>  
+                <div class="panel-value pull-right">  
+                    <h2 class="margin-top"> <?php echo $c_user['total']; ?> </h2>  
+                    <p class="text-muted">Users</p>  
+                </div>  
+            </div>  
+        </a>  
+          
+        <a href="categorie.php" style="color:black; flex: 1; min-width: 200px; margin: 5px;">  
+            <div class="panel panel-box clearfix">  
+                <div class="panel-icon pull-left bg-red">  
+                    <i class="glyphicon glyphicon-th-large"></i>  
+                </div>  
+                <div class="panel-value pull-right">  
+                    <h2 class="margin-top"> <?php echo $c_categorie['total']; ?> </h2>  
+                    <p class="text-muted">Categories</p>  
+                </div>  
+            </div>  
+        </a>  
+          
+        <a href="product.php" style="color:black; flex: 1; min-width: 200px; margin: 5px;">  
+            <div class="panel panel-box clearfix">  
+                <div class="panel-icon pull-left bg-blue2">  
+                    <i class="glyphicon glyphicon-shopping-cart"></i>  
+                </div>  
+                <div class="panel-value pull-right">  
+                    <h2 class="margin-top"> <?php echo $c_product['total']; ?> </h2>  
+                    <p class="text-muted">Products</p>  
+                </div>  
+            </div>  
+        </a>  
+          
+        <a href="sales.php" style="color:black; flex: 1; min-width: 200px; margin: 5px;">  
+            <div class="panel panel-box clearfix">  
+                <div class="panel-icon pull-left bg-green">  
+                    <i class="glyphicon glyphicon-shopping-cart"></i>
+
+                </div>  
+                <div class="panel-value pull-right">  
+                    <h2 class="margin-top"> <?php echo $c_sale['total']; ?></h2>  
+                    <p class="text-muted">Sales</p>  
+                </div>  
+            </div>  
+        </a>  
+          
+        <a href="low_stock_alert.php" style="color:black; flex: 1; min-width: 200px; margin: 5px;">  
+            <div class="panel panel-box clearfix">  
+                <div class="panel-icon pull-left bg-danger">  
+                    <i class="glyphicon glyphicon-warning-sign"></i>  
+                </div>  
+                <div class="panel-value pull-right">  
+                    <h2 class="margin-top"> <?php echo $low_stock_count; ?> </h2>  
+                    <p class="text-muted">Low Stock</p>  
+                </div>  
+            </div>  
+        </a>  
+    </div>  
 </div>
-  <div class="row">
-    <a href="users.php" style="color:black;">
-		<div class="col-md-3">
-       <div class="panel panel-box clearfix">
-         <div class="panel-icon pull-left bg-secondary1">
-          <i class="glyphicon glyphicon-user"></i>
-        </div>
-        <div class="panel-value pull-right">
-          <h2 class="margin-top"> <?php  echo $c_user['total']; ?> </h2>
-          <p class="text-muted">Users</p>
-        </div>
-       </div>
-    </div>
-	</a>
-	
-	<a href="categorie.php" style="color:black;">
-    <div class="col-md-3">
-       <div class="panel panel-box clearfix">
-         <div class="panel-icon pull-left bg-red">
-          <i class="glyphicon glyphicon-th-large"></i>
-        </div>
-        <div class="panel-value pull-right">
-          <h2 class="margin-top"> <?php  echo $c_categorie['total']; ?> </h2>
-          <p class="text-muted">Categories</p>
-        </div>
-       </div>
-    </div>
-	</a>
-	
-	<a href="product.php" style="color:black;">
-    <div class="col-md-3">
-       <div class="panel panel-box clearfix">
-         <div class="panel-icon pull-left bg-blue2">
-          <i class="glyphicon glyphicon-shopping-cart"></i>
-        </div>
-        <div class="panel-value pull-right">
-          <h2 class="margin-top"> <?php  echo $c_product['total']; ?> </h2>
-          <p class="text-muted">Products</p>
-        </div>
-       </div>
-    </div>
-	</a>
-	
-	<a href="sales.php" style="color:black;">
-    <div class="col-md-3">
-       <div class="panel panel-box clearfix">
-         <div class="panel-icon pull-left bg-green">
-          <i >TK</i>
-        </div>
-        <div class="panel-value pull-right">
-          <h2 class="margin-top"> <?php  echo $c_sale['total']; ?></h2>
-          <p class="text-muted">Sales</p>
-        </div>
-       </div>
-    </div>
-	</a>
-</div>
+      
+   
+    
+
   
   <div class="row">
    <div class="col-md-4">
