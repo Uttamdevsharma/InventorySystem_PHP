@@ -6,35 +6,56 @@
 ?>
 <?php
 
-  if(isset($_POST['add_sale'])){
-    $req_fields = array('s_id','quantity','price','total', 'date' );
-    validate_fields($req_fields);
-        if(empty($errors)){
-          $p_id      = $db->escape((int)$_POST['s_id']);
-          $s_qty     = $db->escape((int)$_POST['quantity']);
-          $s_total   = $db->escape($_POST['total']);
-          $date      = $db->escape($_POST['date']);
-          $s_date    = make_date();
+ if(isset($_POST['add_sale'])){  //form submit
+  $req_fields = array('s_id','quantity','price','total', 'date' );  
+  validate_fields($req_fields);  
+  if(empty($errors)){  
+    $p_id      = $db->escape((int)$_POST['s_id']);  
+    $s_qty     = $db->escape((int)$_POST['quantity']);  
+    $s_total   = $db->escape($_POST['total']);  
+    $date      = $db->escape($_POST['date']);  
+    $s_date    = make_date();  
+      //error na thakle db te songroho
 
-          $sql  = "INSERT INTO sales (";
-          $sql .= " product_id,qty,price,date";
-          $sql .= ") VALUES (";
-          $sql .= "'{$p_id}','{$s_qty}','{$s_total}','{$s_date}'";
-          $sql .= ")";
 
-                if($db->query($sql)){
-                  update_product_qty($s_qty,$p_id);
-                  $session->msg('s',"Sale added. ");
-                  redirect('add_sale.php', false);
-                } else {
-                  $session->msg('d',' Sorry failed to add!');
-                  redirect('add_sale.php', false);
-                }
-        } else {
-           $session->msg("d", $errors);
-           redirect('add_sale.php',false);
-        }
-  }
+
+    // stock jacai 
+    $sql_check = "SELECT quantity FROM products WHERE id = '{$p_id}' LIMIT 1";  
+    $result_check = $db->query($sql_check);  
+    $product = $db->fetch_assoc($result_check);  
+    $current_qty = (int)$product['quantity'];  
+      
+    if($current_qty < $s_qty) {  
+      $session->msg('d', "Insufficient stock! Current stock: {$current_qty}");  
+      redirect('add_sale.php', false);  
+      return;  
+    }  
+
+
+      
+    $sql  = "INSERT INTO sales (";  
+    $sql .= " product_id,qty,price,date";  
+    $sql .= ") VALUES (";  
+    $sql .= "'{$p_id}','{$s_qty}','{$s_total}','{$s_date}'";  
+    $sql .= ")";  
+      
+    if($db->query($sql)){  
+      $update_result = update_product_qty($s_qty,$p_id);//product stock koma  
+      if($update_result) {  
+        $session->msg('s',"Sale has been added. ");  
+      } else {  
+        $session->msg('d',"স্টক আপডেট করতে সমস্যা হয়েছে।");  
+      }  
+      redirect('add_sale.php', false);  
+    } else {  
+      $session->msg('d',' দুঃখিত, যোগ করতে ব্যর্থ হয়েছে!');  
+      redirect('add_sale.php', false);  
+    }  
+  } else {  
+    $session->msg("d", $errors);  
+    redirect('add_sale.php',false);  
+  }  
+}
 
 ?>
 <?php include_once('layouts/header.php'); ?>
@@ -61,7 +82,7 @@
       <div class="panel-heading clearfix">
         <strong>
           <span class="glyphicon glyphicon-th"></span>
-          <span>Sale Eidt</span>
+          <span>Sale Edit</span>
        </strong>
       </div>
       <div class="panel-body">

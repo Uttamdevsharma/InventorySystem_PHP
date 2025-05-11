@@ -173,13 +173,17 @@ function tableExists($table){
   /*--------------------------------------------------------------*/
   /* Find group level
   /*--------------------------------------------------------------*/
-  function find_by_groupLevel($level)
-  {
-    global $db;
-    $sql = "SELECT group_level FROM user_groups WHERE group_level = '{$db->escape($level)}' LIMIT 1 ";
-    $result = $db->query($sql);
-    return($db->num_rows($result) === 0 ? true : false);
-  }
+  function find_by_groupLevel($level)  
+{  
+  global $db;  
+  $sql = "SELECT * FROM user_groups WHERE group_level = '{$db->escape($level)}' LIMIT 1 ";  
+  $result = $db->query($sql);  
+  if($db->num_rows($result) === 0) {  
+    return false;  
+  } else {  
+    return $db->fetch_assoc($result);  
+  }  
+}
   /*--------------------------------------------------------------*/
   /* Function for cheaking which user level has access to page
   /*--------------------------------------------------------------*/
@@ -247,15 +251,26 @@ function tableExists($table){
   /*--------------------------------------------------------------*/
   /* Function for Update product quantity
   /*--------------------------------------------------------------*/
-  function update_product_qty($qty,$p_id){
-    global $db;
-    $qty = (int) $qty;
-    $id  = (int)$p_id;
-    $sql = "UPDATE products SET quantity=quantity -'{$qty}' WHERE id = '{$id}'";
-    $result = $db->query($sql);
-    return($db->affected_rows() === 1 ? true : false);
-
-  }
+ function update_product_qty($qty, $p_id) {  
+  global $db;  
+  $qty = (int) $qty;  
+  $id  = (int) $p_id;  
+    
+  // প্রথমে বর্তমান স্টক পরিমাণ পান  
+  $sql_check = "SELECT quantity FROM products WHERE id = '{$id}' LIMIT 1";  
+  $result_check = $db->query($sql_check);  
+  $product = $db->fetch_assoc($result_check);  
+  $current_qty = (int)$product['quantity'];  
+    
+  // যাচাই করুন যে পর্যাপ্ত স্টক আছে কিনা  
+  if($current_qty >= $qty) {  
+    $sql = "UPDATE products SET quantity=quantity -'{$qty}' WHERE id = '{$id}'";  
+    $result = $db->query($sql);  
+    return($db->affected_rows() === 1 ? true : false);  
+  } else {  
+    return false; // পর্যাপ্ত স্টক নেই  
+  }  
+}
   /*--------------------------------------------------------------*/
   /* Function for Display Recent product Added
   /*--------------------------------------------------------------*/
