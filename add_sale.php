@@ -14,7 +14,8 @@
     $s_qty     = $db->escape((int)$_POST['quantity']);  
     $s_total   = $db->escape($_POST['total']);  
     $date      = $db->escape($_POST['date']);  
-    $s_date    = make_date();  
+    //$s_date    = make_date();
+    $s_date = date('Y-m-d', strtotime($date));  
       //error na thakle db te songroho
 
 
