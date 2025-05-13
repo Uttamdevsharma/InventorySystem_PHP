@@ -6,6 +6,7 @@
   $all_categories = find_all('categories');
   $all_photo = find_all('media');
 ?>
+
 <?php
  if(isset($_POST['add_product'])){
    $req_fields = array('product-title','product-categorie','product-quantity','buying-price', 'saleing-price' );
