@@ -322,6 +322,7 @@ function find_recent_sale_added($limit){
 /*--------------------------------------------------------------*/
 function find_sale_by_dates($start_date,$end_date){
   global $db;
+
   $start_date  = date("Y-m-d", strtotime($start_date));
   $end_date    = date("Y-m-d", strtotime($end_date));
   $sql  = "SELECT s.date, p.name,p.sale_price,p.buy_price,";
